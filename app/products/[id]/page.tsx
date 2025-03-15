@@ -1,8 +1,8 @@
-import { GetStaticPropsContext } from "next";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import products from "@/data/products";
 
-export default function ProductDetails({ params }: GetStaticPropsContext) {
+export default async function ProductDetails({ params }:{ params: { id: string } }) {
   const productId = params?.id as string;
   const product = products.find((p) => p.id === parseInt(productId));
 
