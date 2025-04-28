@@ -18,7 +18,17 @@ export default function ProductDetails({ params }: PageProps) {
     if (isAdding) return; // Prevent multiple clicks
     setIsAdding(true);
     console.log('Add to Cart button clicked');
-    addToCart({ ...product, quantity: 1 });
+    if (!product || !product.id) {
+      console.error("Product ID is missing or invalid.");
+      return;
+    }
+    addToCart({
+      id: product.id!, // Use non-null assertion since we already check for `id` existence
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: 1,
+    });
     setTimeout(() => setIsAdding(false), 500); // Re-enable after 500ms
   };
 
