@@ -9,7 +9,7 @@ export default function ProductsPage() {
   const { addToCart } = useCart();
   const [addingProductId, setAddingProductId] = useState<number | null>(null);
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product: { id: number; name: string; price: number; image: string; description: string; }) => {
     if (addingProductId === product.id) return; // Prevent multiple clicks for the same product
     setAddingProductId(product.id);
     addToCart({ ...product, quantity: 1 });

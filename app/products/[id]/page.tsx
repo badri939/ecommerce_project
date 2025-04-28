@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import products from "@/data/products";
 import { useCart } from "@/context/CardContext";
-import { use, useState } from "react";
+import { useState } from "react";
 
 // ✅ Force TypeScript to completely ignore Next.js auto-generated constraints
 interface PageProps {
@@ -36,7 +36,7 @@ export default function ProductDetails({ params }: PageProps) {
     setTimeout(() => setIsAdding(false), 500); // Re-enable after 500ms
   };
 
-  const { id: productId } = use(params as Params);
+  const productId = params.id; // Directly access `id` from `params` without using `use`.
   const product = products.find((p) => p.id === parseInt(productId));
 
   if (!product) {
