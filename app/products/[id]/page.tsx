@@ -1,6 +1,9 @@
+"use client"
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import products from "@/data/products";
+import { useCart } from "@/context/CardContext";
+import { use, useState } from "react";
 
 // ✅ Force TypeScript to completely ignore Next.js auto-generated constraints
 interface PageProps {
@@ -8,8 +11,18 @@ interface PageProps {
 }
 
 export default function ProductDetails({ params }: PageProps) {
-  console.log("Params received:", params); // Debugging log
-  const productId = params.id;
+  const { addToCart } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleAddToCart = () => {
+    if (isAdding) return; // Prevent multiple clicks
+    setIsAdding(true);
+    console.log('Add to Cart button clicked');
+    addToCart({ ...product, quantity: 1 });
+    setTimeout(() => setIsAdding(false), 500); // Re-enable after 500ms
+  };
+
+  const { id: productId } = use(params as { id: string });
   const product = products.find((p) => p.id === parseInt(productId));
 
   if (!product) {
@@ -24,8 +37,12 @@ export default function ProductDetails({ params }: PageProps) {
           <h1 className="text-4xl font-bold">{product.name}</h1>
           <p className="text-xl text-gray-700">{product.description}</p>
           <p className="text-3xl font-semibold text-blue-600">₹{product.price}</p>
-          <button className="mt-4 bg-green-500 text-white px-6 py-3 rounded text-lg">
-            Add to Cart
+          <button
+            onClick={handleAddToCart}
+            disabled={isAdding}
+            className="mt-4 bg-green-500 text-white px-6 py-3 rounded text-lg"
+          >
+            {isAdding ? "Adding..." : "Add to Cart"}
           </button>
         </div>
       </div>

@@ -28,6 +28,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Load cart from localStorage on mount
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
+    console.log("Initial cart in localStorage:", storedCart);
     if (storedCart) {
       setCart(JSON.parse(storedCart));
     }
@@ -40,13 +41,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Function to add an item to the cart
   const addToCart = (item: CartItem) => {
+    console.log("addToCart called with item:", item);
+    if (!item || !item.id) {
+      console.error("Invalid item passed to addToCart:", item);
+      return;
+    }
     setCart((prevCart) => {
       const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
       if (existingItem) {
+        console.log("Item already in cart, updating quantity:", existingItem);
         return prevCart.map((cartItem) =>
           cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
         );
       } else {
+        console.log("Adding new item to cart:", item);
         return [...prevCart, { ...item, quantity: 1 }];
       }
     });

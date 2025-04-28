@@ -1,8 +1,21 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import products from "@/data/products";
+import { useCart } from "@/context/CardContext";
+import { useState } from "react";
 
 export default function ProductsPage() {
+  const { addToCart } = useCart();
+  const [addingProductId, setAddingProductId] = useState<number | null>(null);
+
+  const handleAddToCart = (product) => {
+    if (addingProductId === product.id) return; // Prevent multiple clicks for the same product
+    setAddingProductId(product.id);
+    addToCart({ ...product, quantity: 1 });
+    setTimeout(() => setAddingProductId(null), 500); // Re-enable after 500ms
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold text-center mb-6">Our Products</h1>
@@ -19,11 +32,19 @@ export default function ProductsPage() {
             <h2 className="text-xl font-semibold mt-2">{product.name}</h2>
             <p className="text-gray-600">{product.description}</p>
             <p className="text-blue-600 font-bold">₹{product.price}</p>
-            <Link href={{pathname:`/products/${product.id}`}}>
-              <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-                View Details
+            <div className="flex gap-2 mt-2">
+              <Link href={{ pathname: `/products/${product.id}` }}>
+                <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                  View Details
+                </button>
+              </Link>
+              <button
+                onClick={() => handleAddToCart(product)}
+                className="bg-green-500 text-white px-4 py-2 rounded"
+              >
+                Add to Cart
               </button>
-            </Link>
+            </div>
           </div>
         ))}
       </div>
