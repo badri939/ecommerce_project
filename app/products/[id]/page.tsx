@@ -10,6 +10,10 @@ interface PageProps {
   params: { id: string } | any; // ← ALLOW ANYTHING TO PREVENT ERRORS
 }
 
+interface Params {
+  id: string;
+}
+
 export default function ProductDetails({ params }: PageProps) {
   const { addToCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
@@ -32,7 +36,7 @@ export default function ProductDetails({ params }: PageProps) {
     setTimeout(() => setIsAdding(false), 500); // Re-enable after 500ms
   };
 
-  const { id: productId } = use(params as { id: string });
+  const { id: productId } = use(params as Params);
   const product = products.find((p) => p.id === parseInt(productId));
 
   if (!product) {
