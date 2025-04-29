@@ -15,7 +15,7 @@ interface Params {
 }
 
 export default function ProductDetails({ params }: PageProps) {
-  const resolvedParams = use(params); // Unwrap the params Promise
+  const resolvedParams = use(params) as { id: string }; // Assert the type of resolvedParams
   const productId = resolvedParams.id; // Access the id property
 
   const { addToCart, cartItems } = useCart();

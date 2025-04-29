@@ -24,7 +24,11 @@ export default function RegisterPage() {
       alert("Registration successful!");
       router.push("/login"); // Redirect to login page
     } catch (error) {
-      alert("Registration failed: " + error.message);
+      if (error instanceof Error) {
+        alert("Registration failed: " + error.message);
+      } else {
+        alert("An unknown error occurred.");
+      }
     }
   };
 

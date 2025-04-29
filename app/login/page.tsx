@@ -17,7 +17,11 @@ export default function LoginPage() {
       alert("Login successful!");
       router.push("/"); // Redirect to home page
     } catch (error) {
-      alert("Login failed: " + error.message);
+      if (error instanceof Error) {
+        alert("Login failed: " + error.message);
+      } else {
+        alert("An unknown error occurred.");
+      }
     }
   };
 
