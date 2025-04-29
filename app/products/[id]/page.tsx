@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import products from "@/data/products";
 import { useCart } from "@/context/CardContext";
-import { useState } from "react";
+import { useState, use } from "react";
 
 // ✅ Force TypeScript to completely ignore Next.js auto-generated constraints
 interface PageProps {
@@ -15,7 +15,10 @@ interface Params {
 }
 
 export default function ProductDetails({ params }: PageProps) {
-  const { addToCart } = useCart();
+  const resolvedParams = use(params); // Unwrap the params Promise
+  const productId = resolvedParams.id; // Access the id property
+
+  const { addToCart, cartItems } = useCart();
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = () => {
@@ -36,7 +39,6 @@ export default function ProductDetails({ params }: PageProps) {
     setTimeout(() => setIsAdding(false), 500); // Re-enable after 500ms
   };
 
-  const productId = params.id; // Directly access `id` from `params` without using `use`.
   const product = products.find((p) => p.id === parseInt(productId));
 
   if (!product) {
@@ -54,11 +56,16 @@ export default function ProductDetails({ params }: PageProps) {
           <button
             onClick={handleAddToCart}
             disabled={isAdding}
-            className="mt-4 bg-green-500 text-white px-6 py-3 rounded text-lg"
+            className="mt-4 bg-green-500 text-white px-6 py-3 rounded text-lg hover:shadow-lg transition-shadow duration-300"
           >
             {isAdding ? "Adding..." : "Add to Cart"}
           </button>
         </div>
+      </div>
+      <div className="mt-6">
+        <button className="cart-button" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <img src="/cart.svg" alt="Cart Icon" width="24" height="24" style={{ display: 'block', border: '1px solid red' }} /> Cart: {cartItems.length} items
+        </button>
       </div>
     </div>
   );

@@ -13,9 +13,11 @@ interface CartItem {
 // Define context data type
 interface CartContextType {
   cart: CartItem[];
+  cartItems: CartItem[]; // New property to expose cart items
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: number) => void;
   clearCart: () => void;
+  updateCartItemQuantity: (id: number, quantity: number) => void; // New function
 }
 
 // Create the context
@@ -70,8 +72,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCart([]);
   };
 
+  // Function to update the quantity of an item in the cart
+  const updateCartItemQuantity = (id: number, quantity: number) => {
+    setCart((prevCart) => {
+      if (quantity <= 0) {
+        return prevCart.filter((item) => item.id !== id); // Remove item if quantity is 0
+      }
+      return prevCart.map((item) =>
+        item.id === id ? { ...item, quantity } : item
+      );
+    });
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider
+      value={{ cart, cartItems: cart, addToCart, removeFromCart, clearCart, updateCartItemQuantity }}
+    >
       {children}
     </CartContext.Provider>
   );
