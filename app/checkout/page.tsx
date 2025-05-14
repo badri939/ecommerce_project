@@ -3,16 +3,46 @@
 import { useCart } from "@/context/CardContext";
 import { useState } from "react";
 import { withAuth } from "@/context/AuthContext";
+import { auth } from "@/firebaseConfig";
 
 export default withAuth(function CheckoutPage() {
   const { cart, clearCart } = useCart();
   const totalCost = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleCheckout = (e: React.FormEvent) => {
+  const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    clearCart();
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("You must be logged in to place an order.");
+        return;
+      }
+
+      const token = await user.getIdToken();
+
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          cart,
+          totalCost,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to place order.");
+      }
+
+      setIsSubmitted(true);
+      clearCart();
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order. Please try again.");
+    }
   };
 
   if (isSubmitted) {

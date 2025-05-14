@@ -35,6 +35,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <span>Cart</span>
                   </button>
                 </Link>
+                <Link href="/profile">
+                  <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+                    Profile
+                  </button>
+                </Link>
                 <LogoutButton />
               </nav>
             </header>
